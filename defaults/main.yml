@@ -1,0 +1,10 @@
+---
+# defaults file for ansible-airflow
+#airflow_version: 000
+airflow_user: airflow
+airflow_group: airflow
+airflow_port: 8080
+airflow_dir: /opt/airflow
+airflow_need_init: False
+airflow_modules:
+- postgres

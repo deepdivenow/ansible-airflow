@@ -1,0 +1,17 @@
+galaxy_info:
+  author: Andrey Kislyak
+  description: Role for airflow installation
+  company: ITSumma
+
+  license: Apache
+
+  min_ansible_version: 2.6
+
+  platforms:
+  - name: EL
+    versions:
+    - 7
+
+  galaxy_tags: []
+
+dependencies: []
