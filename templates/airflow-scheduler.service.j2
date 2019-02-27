@@ -1,0 +1,17 @@
+[Unit]
+Description=airflow
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=60s
+TimeoutStartSec=20
+User={{ airflow_user }}
+ExecStart=/bin/bash -c '\
+    source {{ airflow_dir }}/venv/bin/activate && \
+    {{ airflow_dir }}/venv/bin/airflow scheduler'
+
+[Install]
+WantedBy=multi-user.target

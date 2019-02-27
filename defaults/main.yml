@@ -8,3 +8,6 @@ airflow_dir: /opt/airflow
 airflow_need_init: False
 airflow_modules:
 - postgres
+airflow_services:
+- airflow
+- airflow-scheduler
