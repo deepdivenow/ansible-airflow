@@ -1,0 +1,13 @@
+- name: Create airflow config
+  template:
+    src: "{{ item }}.j2"
+    dest: "{{ airflow_dir }}/{{ item }}"
+  notify: restart airflow
+  with_items: [airflow.env, airflow.cfg]
+
+- name: Init airflow
+  command: bash -c "source {{ airflow_dir }}/venv/bin/activate && airflow initdb"
+  environment:
+    AIRFLOW_HOME: "{{ airflow_dir }}"
+  become_user: "{{ airflow_user }}"
+  when: airflow_need_init

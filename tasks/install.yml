@@ -1,0 +1,37 @@
+---
+- name: Install Python packages
+  yum:
+    name: "{{ airflow_packages }}"
+    state: present
+
+- name: Create group "{{ airflow_user }}"
+  group: name="{{ airflow_group }}"
+
+- name: Create user "{{ airflow_user }}"
+  user:
+    name: "{{ airflow_user }}"
+    group: "{{ airflow_group }}"
+    home: "{{ airflow_dir }}"
+    comment: Airflow_user User
+
+- name: Make Airflow home
+  file:
+    name: "{{ airflow_dir }}"
+    owner: "{{ airflow_user }}"
+    group: "{{ airflow_group }}"
+    mode: 0700
+    state: directory
+
+- name: Copy file requirements.txt
+  template:
+    src: "requirements.txt.j2"
+    dest: "{{ airflow_dir }}/requirements.txt"
+
+- name: Install Airflow to venv
+  pip:
+    requirements: requirements.txt
+    chdir: "{{ airflow_dir }}"
+    virtualenv: venv
+    virtualenv_command: "{{ airflow_python_bin }} -m venv"
+  environment:
+  - AIRFLOW_GPL_UNIDECODE: yes

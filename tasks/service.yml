@@ -1,0 +1,13 @@
+---
+- name: Create service file airflow.service
+  template:
+    src: "{{ item }}.service.j2"
+    dest: "/etc/systemd/system/{{ item }}.service"
+  notify: restart airflow
+  with_items: "{{ airflow_services }}"
+
+- meta: flush_handlers
+
+- name: Enable and start airflow
+  service: name="{{ item }}" enabled=true state=started
+  with_items: "{{ airflow_services }}"

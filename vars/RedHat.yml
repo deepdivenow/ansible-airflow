@@ -1,0 +1,3 @@
+---
+airflow_packages: [python36,python36-pip,python36-setuptools,python36-devel,python-setuptools,gcc]
+airflow_python_bin: "/usr/bin/python36"

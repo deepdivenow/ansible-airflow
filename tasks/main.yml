@@ -1,64 +1,18 @@
 ---
 # tasks file for ansible-airflow
-- name: Install Python packages
-  yum:
-    name: [python36,python36-pip,python36-setuptools,python36-devel,python-setuptools,gcc]
-    state: present
-#
-#- name: install the 'Development tools' package group
-#  yum:
-#    name: "@Development tools"
-#    state: present
 
-- name: Create group "{{ airflow_user }}"
-  group: name="{{ airflow_group }}"
+- name: Load a variable files
+  include_vars: "{{ item }}"
+  with_first_found:
+    - "{{ ansible_os_family }}.yml"
+    - "empty.yml"
+  tags: [always]
 
-- name: Create user "{{ airflow_user }}"
-  user:
-    name: "{{ airflow_user }}"
-    group: "{{ airflow_group }}"
-    home: "{{ airflow_dir }}"
-    comment: Airflow_user User
+- import_tasks: install.yml
+  tags: [airflow, airflow_install]
 
-- name: Make Airflow home
-  file:
-    name: "{{ airflow_dir }}"
-    owner: "{{ airflow_user }}"
-    group: "{{ airflow_group }}"
-    mode: 0700
-    state: directory
+- import_tasks: configure.yml
+  tags: [airflow, airflow_configure]
 
-- name: Copy file requirements.txt
-  template:
-    src: "requirements.txt.j2"
-    dest: "{{ airflow_dir }}/requirements.txt"
-
-- name: Install Airflow to venv
-  pip:
-    requirements: requirements.txt
-    chdir: "{{ airflow_dir }}"
-    virtualenv: venv
-    virtualenv_command: /usr/bin/python36 -m venv
-  environment:
-  - AIRFLOW_GPL_UNIDECODE: yes
-
-- name: Create service file airflow.service
-  template:
-    src: "{{ item }}.service.j2"
-    dest: "/etc/systemd/system/{{ item }}.service"
-  notify: restart airflow
-  with_items: "{{ airflow_services }}"
-
-- name: Init airflow
-  shell: |
-      source {{ airflow_dir }}/venv/bin/activate && \
-      airflow initdb
-  become_user: "{{ airflow_user }}"
-  when: airflow_need_init
-
-- meta: flush_handlers
-
-- name: Enable and start airflow
-  service: name="{{ item }}" enabled=true state=started
-  with_items: "{{ airflow_services }}"
-
+- import_tasks: service.yml
+  tags: [airflow, airflow_service]

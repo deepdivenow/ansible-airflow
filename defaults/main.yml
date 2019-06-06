@@ -11,3 +11,21 @@ airflow_modules:
 airflow_services:
 - airflow
 - airflow-scheduler
+# The executor class that airflow should use. Choices include
+# SequentialExecutor, LocalExecutor, CeleryExecutor, DaskExecutor, KubernetesExecutor
+airflow_executor: SequentialExecutor
+airflow_load_examples: False
+airflow_task_runner: StandardTaskRunner
+airflow_visibility_timeout: 0
+
+
+airflow_db_name: "airflow"
+airflow_db_driver: "postgresql+psycopg2"
+airflow_db_host: "127.0.0.1"
+airflow_db_port: 5432
+airflow_db_user: "airflow"
+airflow_db_password: "some_password"
+## sql_alchemy_conn = postgresql+psycopg2://airflow:airflow@127.0.0.1:5432/airflow
+airflow_sql_alchemy_conn: "{{ airflow_db_driver }}://{{ airflow_db_user }}:{{ airflow_db_password }}@{{ airflow_db_host }}:{{ airflow_db_port }}/{{ airflow_db_name }}"
+airflow_broker_url: redis://localhost:6379/0
+airflow_result_backend: "{{ airflow_db_driver }}://{{ airflow_db_user }}:{{ airflow_db_password }}@{{ airflow_db_host }}:{{ airflow_db_port }}/{{ airflow_db_name }}"
