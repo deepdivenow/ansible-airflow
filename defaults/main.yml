@@ -29,3 +29,4 @@ airflow_db_password: "some_password"
 airflow_sql_alchemy_conn: "{{ airflow_db_driver }}://{{ airflow_db_user }}:{{ airflow_db_password }}@{{ airflow_db_host }}:{{ airflow_db_port }}/{{ airflow_db_name }}"
 airflow_broker_url: redis://localhost:6379/0
 airflow_result_backend: "{{ airflow_db_driver }}://{{ airflow_db_user }}:{{ airflow_db_password }}@{{ airflow_db_host }}:{{ airflow_db_port }}/{{ airflow_db_name }}"
+#airflow_initdb_script: ""  #If defined execute initdb script

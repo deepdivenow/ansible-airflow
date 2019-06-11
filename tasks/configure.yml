@@ -11,3 +11,24 @@
     AIRFLOW_HOME: "{{ airflow_dir }}"
   become_user: "{{ airflow_user }}"
   when: airflow_need_init
+
+- name: Copy script
+  template:
+   src:  "{{ airflow_initdb_script }}.j2"
+   dest:  "/tmp/{{ airflow_initdb_script | basename}}"
+  when: airflow_need_init
+
+- name: Apply settings
+  pgsql_query:
+    db:  "{{ airflow_db_name }}"
+    login_host: "{{ airflow_db_host }}"
+    login_user: "{{ airflow_db_user }}"
+    login_password: "{{ airflow_db_password }}"
+    path_to_script: "/tmp/{{ airflow_initdb_script | basename}}"
+  when: airflow_need_init and airflow_initdb_script is defined and
+        airflow_initdb_script | length > 0
+
+- name: Delete initdb script
+  file:
+    dest: "/tmp/{{ airflow_initdb_script | basename}}"
+    state: absent
