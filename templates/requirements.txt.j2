@@ -1,4 +1,6 @@
 psutil
+pympler
+geopy
 apache-airflow
 {%- if airflow_modules | length > 0 %}{{ airflow_modules | to_yaml }}{% endif %}
 {%- if airflow_version is defined %}=={{ airflow_version }}{% endif %}
