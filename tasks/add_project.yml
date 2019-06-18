@@ -1,0 +1,13 @@
+---
+
+- name: Check git is installed
+  yum: name=git
+
+- name: Add projects repos
+  git:
+    repo: "{{ item.repo }}"
+    dest: "{{ airflow_dir }}/{{ item.name }}"
+    version: "{{ item.version | default(omit) }}"
+    key_file: "{{ item.key_file | default(omit) }}"
+  with_items: "{{ airflow_git_projects }}"
+#  become_user: "{{ airflow_user }}"

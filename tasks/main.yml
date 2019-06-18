@@ -16,3 +16,7 @@
 
 - import_tasks: service.yml
   tags: [airflow, airflow_service]
+
+- import_tasks: add_project.yml
+  when: airflow_git_projects | length > 0
+  tags: [airflow, airflow_git]

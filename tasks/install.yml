@@ -22,6 +22,15 @@
     mode: 0700
     state: directory
 
+- name: Make Airflow dirs
+  file:
+    name: "{{ airflow_dir }}/{{ item }}"
+    owner: "{{ airflow_user }}"
+    group: "{{ airflow_group }}"
+    mode: 0755
+    state: directory
+  with_items: [dags,logs]
+
 - name: Copy file requirements.txt
   template:
     src: "requirements.txt.j2"
