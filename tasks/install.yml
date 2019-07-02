@@ -13,6 +13,7 @@
     group: "{{ airflow_group }}"
     home: "{{ airflow_dir }}"
     comment: Airflow_user User
+    generate_ssh_key: True
 
 - name: Make Airflow home
   file:
