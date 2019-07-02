@@ -3,11 +3,30 @@
 - name: Check git is installed
   yum: name=git
 
-- name: Add projects repos
+- name: Add key
+  copy:
+    src: "{{ item.key_file }}"
+    dest: "{{ airflow_dir }}/.ssh/{{ item.key_file | basename}}"
+    mode: 0400
+  when: item.key_file is defined and item.key_file | basename not in ["id_rsa","id_dsa"]
+  with_items: "{{ airflow_git_projects }}"
+  become_user: "{{ airflow_user }}"
+
+- name: Add projects repos with keys
   git:
     repo: "{{ item.repo }}"
     dest: "{{ airflow_dir }}/{{ item.name }}"
     version: "{{ item.version | default(omit) }}"
-    key_file: "{{ item.key_file | default(omit) }}"
+    key_file: "{{ airflow_dir }}/.ssh/{{ item.key_file | basename }}"
+  when: item.key_file is defined
   with_items: "{{ airflow_git_projects }}"
-#  become_user: "{{ airflow_user }}"
+  become_user: "{{ airflow_user }}"
+
+- name: Add projects repos without keys
+  git:
+    repo: "{{ item.repo }}"
+    dest: "{{ airflow_dir }}/{{ item.name }}"
+    version: "{{ item.version | default(omit) }}"
+  when: item.key_file is not defined
+  with_items: "{{ airflow_git_projects }}"
+  become_user: "{{ airflow_user }}"
